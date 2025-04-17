@@ -20,6 +20,198 @@ class SummaryScreen extends StatelessWidget {
     }
   }
 
+  void _showEditBottomSheet(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) => Scaffold(
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+            title: const Text(
+              'Edit Input Types',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+              ),
+            ),
+            leading: const SizedBox(), // Empty leading to remove back button
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.close, color: Colors.white),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+          body: Consumer<FormProvider>(
+            builder: (context, formProvider, child) {
+              final fields = formProvider.formFields!;
+              return Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          ...fields.map((field) =>
+                              _buildFormField(context, field, formProvider)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF00FFA3),
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text(
+                          'Update',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFormField(
+      BuildContext context, dynamic field, FormProvider formProvider) {
+    final formState = formProvider.formState;
+
+    switch (field.type.toLowerCase()) {
+      case 'radio':
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              field.label,
+              style: const TextStyle(color: Colors.white, fontSize: 16),
+            ),
+            ...?field.options?.map(
+              (option) => RadioListTile<String>(
+                title:
+                    Text(option, style: const TextStyle(color: Colors.white)),
+                value: option,
+                groupValue: formState[field.label],
+                onChanged: (value) {
+                  formProvider.updateField(field.label, value);
+                },
+                activeColor: const Color(0xFF00FFA3),
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+        );
+
+      case 'checkbox':
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              field.label,
+              style: const TextStyle(color: Colors.white, fontSize: 16),
+            ),
+            ...?field.options?.map(
+              (option) => CheckboxListTile(
+                title:
+                    Text(option, style: const TextStyle(color: Colors.white)),
+                value: formState['${field.label}_$option'] ?? false,
+                onChanged: (value) {
+                  formProvider.updateField('${field.label}_$option', value);
+                },
+                activeColor: const Color(0xFF00FFA3),
+                checkColor: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+        );
+
+      case 'dropdown':
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              field.label,
+              style: const TextStyle(color: Colors.white, fontSize: 16),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: DropdownButtonFormField<String>(
+                value: formState[field.label] as String?,
+                items: field.options
+                    ?.map<DropdownMenuItem<String>>((String option) {
+                  return DropdownMenuItem<String>(
+                    value: option,
+                    child: Text(
+                      option,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (String? value) {
+                  formProvider.updateField(field.label, value);
+                },
+                dropdownColor: Colors.black,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                ),
+                icon: const Icon(
+                  Icons.arrow_drop_down,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+        );
+
+      default:
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              field.label,
+              style: const TextStyle(color: Colors.white, fontSize: 16),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: TextEditingController(text: formState[field.label]),
+              onChanged: (value) {
+                formProvider.updateField(field.label, value);
+              },
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                enabledBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                focusedBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFF00FFA3)),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,10 +253,10 @@ class SummaryScreen extends StatelessWidget {
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ...fields.map((field) {
                   if (field.type.toLowerCase() == 'checkbox') {
-                    // Handle checkbox fields
                     final selectedOptions = field.options
                         ?.where((option) =>
                             formState['${field.label}_$option'] == true)
@@ -113,7 +305,6 @@ class SummaryScreen extends StatelessWidget {
                       ),
                     );
                   } else {
-                    // Handle other field types
                     final value = formState[field.label];
                     if (value == null || value.toString().isEmpty) {
                       return const SizedBox.shrink();
@@ -154,6 +345,23 @@ class SummaryScreen extends StatelessWidget {
                   }
                 }).toList(),
                 const SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton(
+                    onPressed: () => _showEditBottomSheet(context),
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                    ),
+                    child: const Text(
+                      'Edit Response',
+                      style: TextStyle(
+                        color: Color(0xFF00FFA3),
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -161,7 +369,10 @@ class SummaryScreen extends StatelessWidget {
                       backgroundColor: const Color(0xFF00FFA3),
                       padding: const EdgeInsets.symmetric(vertical: 15),
                     ),
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () {
+                      context.read<FormProvider>().clearForm();
+                      Navigator.pop(context);
+                    },
                     child: const Text(
                       'Back',
                       style: TextStyle(color: Colors.black),

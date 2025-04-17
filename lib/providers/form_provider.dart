@@ -45,6 +45,7 @@ class FormProvider extends ChangeNotifier {
 
   void clearForm() {
     _formState = {};
+    loadFormFields();
     notifyListeners();
   }
 }
