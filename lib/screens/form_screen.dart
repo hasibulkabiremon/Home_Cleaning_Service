@@ -21,6 +21,24 @@ class _FormScreenState extends State<FormScreen> {
     );
   }
 
+  Widget _buildFieldTitle(String title, String? value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(color: Colors.white),
+        ),
+        if (value == null || value.isEmpty)
+          const Text(
+            'This field is required',
+            style: TextStyle(color: Colors.red, fontSize: 12),
+          ),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,10 +116,7 @@ class _FormScreenState extends State<FormScreen> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              field.label,
-              style: const TextStyle(color: Colors.white),
-            ),
+            _buildFieldTitle(field.label, formState[field.label]),
             ...?field.options?.map(
               (option) => RadioListTile<String>(
                 title:
@@ -114,11 +129,7 @@ class _FormScreenState extends State<FormScreen> {
                 activeColor: const Color(0xFF00FFA3),
               ),
             ),
-            if (!formProvider.validateField(field))
-              const Text(
-                'This field is required',
-                style: TextStyle(color: Colors.red),
-              ),
+            const SizedBox(height: 16),
           ],
         );
 
@@ -126,10 +137,7 @@ class _FormScreenState extends State<FormScreen> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              field.label,
-              style: const TextStyle(color: Colors.white),
-            ),
+            _buildFieldTitle(field.label, formState[field.label]),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
@@ -154,6 +162,7 @@ class _FormScreenState extends State<FormScreen> {
                 underline: const SizedBox(),
               ),
             ),
+            const SizedBox(height: 16),
           ],
         );
 
@@ -161,21 +170,20 @@ class _FormScreenState extends State<FormScreen> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              field.label,
-              style: const TextStyle(color: Colors.white),
-            ),
+            _buildFieldTitle(field.label, formState[field.label]),
             ...?field.options?.map(
-              (option) => CheckboxListTile(
+              (option) => RadioListTile<String>(
                 title:
                     Text(option, style: const TextStyle(color: Colors.white)),
-                value: formState['${field.label}_$option'] ?? false,
+                value: option,
+                groupValue: formState[field.label],
                 onChanged: (value) {
-                  formProvider.updateField('${field.label}_$option', value);
+                  formProvider.updateField(field.label, value);
                 },
                 activeColor: const Color(0xFF00FFA3),
               ),
             ),
+            const SizedBox(height: 16),
           ],
         );
 
@@ -185,10 +193,7 @@ class _FormScreenState extends State<FormScreen> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              field.label,
-              style: const TextStyle(color: Colors.white),
-            ),
+            _buildFieldTitle(field.label, formState[field.label]),
             TextField(
               decoration: InputDecoration(
                 hintText: field.placeholder,
@@ -205,11 +210,7 @@ class _FormScreenState extends State<FormScreen> {
                 formProvider.updateField(field.label, value);
               },
             ),
-            if (!formProvider.validateField(field))
-              const Text(
-                'This field is required',
-                style: TextStyle(color: Colors.red),
-              ),
+            const SizedBox(height: 16),
           ],
         );
     }

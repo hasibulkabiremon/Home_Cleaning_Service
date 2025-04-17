@@ -5,6 +5,21 @@ import '../providers/form_provider.dart';
 class SummaryScreen extends StatelessWidget {
   const SummaryScreen({Key? key}) : super(key: key);
 
+  IconData _getIconForField(String fieldType) {
+    switch (fieldType.toLowerCase()) {
+      case 'radio':
+        return Icons.radio_button_checked;
+      case 'dropdown':
+        return Icons.arrow_drop_down_circle;
+      case 'checkbox':
+        return Icons.check_box;
+      case 'textfield':
+        return Icons.text_fields;
+      default:
+        return Icons.short_text;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,8 +30,15 @@ class SummaryScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        title:
-            const Text('Selected Input', style: TextStyle(color: Colors.white)),
+        title: Row(
+          children: [
+            Text('Selected Input', style: TextStyle(color: Colors.white)),
+            SizedBox(width: 8),
+            Text(
+                '${context.watch<FormProvider>().formFields?.length ?? 0} items',
+                style: TextStyle(color: Colors.grey, fontSize: 14)),
+          ],
+        ),
       ),
       body: Consumer<FormProvider>(
         builder: (context, formProvider, child) {
@@ -39,7 +61,6 @@ class SummaryScreen extends StatelessWidget {
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ...fields.map((field) {
                   if (field.type.toLowerCase() == 'checkbox') {
@@ -51,25 +72,41 @@ class SummaryScreen extends StatelessWidget {
                     if (selectedOptions == null || selectedOptions.isEmpty) {
                       return const SizedBox.shrink();
                     }
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    return Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom:
+                              BorderSide(color: Colors.white.withOpacity(0.1)),
+                        ),
+                      ),
+                      child: Row(
                         children: [
-                          Text(
-                            field.label,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Icon(
+                            _getIconForField(field.type),
+                            color: const Color(0xFF00FFA3),
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            selectedOptions.join(', '),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  field.label,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  selectedOptions.join(', '),
+                                  style: TextStyle(
+                                    color: Colors.grey[400],
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -81,24 +118,33 @@ class SummaryScreen extends StatelessWidget {
                     if (value == null || value.toString().isEmpty) {
                       return const SizedBox.shrink();
                     }
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    return Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom:
+                              BorderSide(color: Colors.white.withOpacity(0.1)),
+                        ),
+                      ),
+                      child: Row(
                         children: [
+                          Icon(
+                            _getIconForField(field.type),
+                            color: const Color(0xFF00FFA3),
+                          ),
+                          const SizedBox(width: 12),
                           Text(
                             field.label,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          const Spacer(),
                           Text(
                             value.toString(),
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: Colors.grey[400],
                               fontSize: 14,
                             ),
                           ),
