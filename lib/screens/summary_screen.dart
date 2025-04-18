@@ -341,22 +341,24 @@ class SummaryScreen extends StatelessWidget {
                       return const SizedBox.shrink();
                     }
                     return Container(
-                      margin: const EdgeInsets.only(bottom: 16),
-                      padding: const EdgeInsets.all(16),
+                      // margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.1),
-                          width: 1,
+                        // color: Colors.black.withOpacity(0.3),
+                        // borderRadius: BorderRadius.circular(12),
+                        border: Border(
+                          bottom:
+                              BorderSide(color: Colors.white.withOpacity(0.1)),
+
+
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
+                        // boxShadow: [
+                        //   BoxShadow(
+                        //     color: Colors.black.withOpacity(0.2),
+                        //     blurRadius: 10,
+                        //     offset: const Offset(0, 4),
+                        //   ),
+                        // ],
                       ),
                       child: Row(
                         children: [
@@ -398,23 +400,22 @@ class SummaryScreen extends StatelessWidget {
                       return const SizedBox.shrink();
                     }
                     return Container(
-                      margin: const EdgeInsets.only(bottom: 16),
-                      padding: const EdgeInsets.all(16),
+                      // margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.1),
-                          width: 1,
+                        border: Border(
+                          bottom:
+                              BorderSide(color: Colors.white.withOpacity(0.1)),
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
+                        ),
+                        // boxShadow: [
+                        //   BoxShadow(
+                        //     color: Colors.black.withOpacity(0.2),
+                        //     blurRadius: 10,
+                        //     offset: const Offset(0, 4),
+                        //   ),
+                        // ],
+                      // ),
                       child: Row(
                         children: [
                           Icon(
