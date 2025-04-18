@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/form_field_model.dart';
 import '../providers/form_provider.dart';
 import 'summary_screen.dart';
@@ -27,12 +28,20 @@ class _FormScreenState extends State<FormScreen> {
       children: [
         Text(
           title,
-          style: const TextStyle(color: Colors.white),
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontSize: 19,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         if (value == null || value.isEmpty)
-          const Text(
+          Text(
             'This field is required',
-            style: TextStyle(color: Colors.red, fontSize: 12),
+            style: GoogleFonts.poppins(
+              color: Colors.red,
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+            ),
           ),
         const SizedBox(height: 8),
       ],
@@ -49,7 +58,13 @@ class _FormScreenState extends State<FormScreen> {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Input Types', style: TextStyle(color: Colors.white)),
+        title: Text(
+          'Input Types',
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
       body: Consumer<FormProvider>(
         builder: (context, formProvider, child) {
@@ -61,7 +76,10 @@ class _FormScreenState extends State<FormScreen> {
             return Center(
               child: Text(
                 'Error: ${formProvider.error}',
-                style: const TextStyle(color: Colors.white),
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             );
           }
@@ -93,9 +111,13 @@ class _FormScreenState extends State<FormScreen> {
                         );
                       }
                     },
-                    child: const Text(
+                    child: Text(
                       'Submit',
-                      style: TextStyle(color: Colors.black),
+                      style: GoogleFonts.poppins(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ),
@@ -110,109 +132,156 @@ class _FormScreenState extends State<FormScreen> {
   Widget _buildFormField(BuildContext context, FormFieldModel field) {
     final formProvider = context.watch<FormProvider>();
     final formState = formProvider.formState;
+    final fieldIndex = formProvider.formFields!.indexOf(field) + 1;
 
-    switch (field.type.toFieldType()) {
-      case FieldType.radio:
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildFieldTitle(field.label, formState[field.label]),
-            ...?field.options?.map(
-              (option) => RadioListTile<String>(
-                title:
-                    Text(option, style: const TextStyle(color: Colors.white)),
-                value: option,
-                groupValue: formState[field.label],
-                onChanged: (value) {
-                  formProvider.updateField(field.label, value);
-                },
-                activeColor: const Color(0xFF00FFA3),
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-        );
-
-      case FieldType.dropdown:
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildFieldTitle(field.label, formState[field.label]),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.white),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: DropdownButton<String>(
-                value: formState[field.label] ?? field.selected,
-                items: field.options?.map((option) {
-                  return DropdownMenuItem(
-                    value: option,
-                    child: Text(option,
-                        style: const TextStyle(color: Colors.white)),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  formProvider.updateField(field.label, value);
-                },
-                isExpanded: true,
-                dropdownColor: Colors.black,
-                style: const TextStyle(color: Colors.white),
-                underline: const SizedBox(),
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-        );
-
-      case FieldType.checkbox:
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildFieldTitle(field.label, formState[field.label]),
-            ...?field.options?.map(
-              (option) => RadioListTile<String>(
-                title:
-                    Text(option, style: const TextStyle(color: Colors.white)),
-                value: option,
-                groupValue: formState[field.label],
-                onChanged: (value) {
-                  formProvider.updateField(field.label, value);
-                },
-                activeColor: const Color(0xFF00FFA3),
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-        );
-
-      case FieldType.textfield:
-      case FieldType.text:
-      default:
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildFieldTitle(field.label, formState[field.label]),
-            TextField(
-              decoration: InputDecoration(
-                hintText: field.placeholder,
-                hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
-                enabledBorder: const UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-                focusedBorder: const UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFF00FFA3)),
+    Widget buildFieldContent() {
+      switch (field.type.toFieldType()) {
+        case FieldType.radio:
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildFieldTitle(
+                  '$fieldIndex. ${field.label}', formState[field.label]),
+              ...?field.options?.map(
+                (option) => RadioListTile<String>(
+                  title: Text(
+                    option,
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  value: option,
+                  groupValue: formState[field.label],
+                  onChanged: (value) {
+                    formProvider.updateField(field.label, value);
+                  },
+                  activeColor: const Color(0xFF00FFA3),
                 ),
               ),
-              style: const TextStyle(color: Colors.white),
-              onChanged: (value) {
-                formProvider.updateField(field.label, value);
-              },
-            ),
-            const SizedBox(height: 16),
-          ],
-        );
+            ],
+          );
+
+        case FieldType.dropdown:
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildFieldTitle(
+                  '$fieldIndex. ${field.label}', formState[field.label]),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: DropdownButton<String>(
+                  value: formState[field.label] ?? field.selected,
+                  items: field.options?.map((option) {
+                    return DropdownMenuItem(
+                      value: option,
+                      child: Text(
+                        option,
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    formProvider.updateField(field.label, value);
+                  },
+                  isExpanded: true,
+                  dropdownColor: Colors.black,
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  underline: const SizedBox(),
+                ),
+              ),
+            ],
+          );
+
+        case FieldType.checkbox:
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildFieldTitle(
+                  '$fieldIndex. ${field.label}', formState[field.label]),
+              ...?field.options?.map(
+                (option) => RadioListTile<String>(
+                  title: Text(
+                    option,
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  value: option,
+                  groupValue: formState[field.label],
+                  onChanged: (value) {
+                    formProvider.updateField(field.label, value);
+                  },
+                  activeColor: const Color(0xFF00FFA3),
+                ),
+              ),
+            ],
+          );
+
+        case FieldType.textfield:
+        case FieldType.text:
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildFieldTitle(
+                  '$fieldIndex. ${field.label}', formState[field.label]),
+              TextField(
+                decoration: InputDecoration(
+                  hintText: field.placeholder,
+                  hintStyle: GoogleFonts.poppins(
+                    color: Colors.white.withOpacity(0.5),
+                    fontWeight: FontWeight.w400,
+                  ),
+                  enabledBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xFF00FFA3)),
+                  ),
+                ),
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w400,
+                ),
+                onChanged: (value) {
+                  formProvider.updateField(field.label, value);
+                },
+              ),
+            ],
+          );
+      }
     }
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.1),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: buildFieldContent(),
+    );
   }
 }

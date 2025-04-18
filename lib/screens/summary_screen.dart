@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../providers/form_provider.dart';
 
 class SummaryScreen extends StatelessWidget {
@@ -27,11 +28,12 @@ class SummaryScreen extends StatelessWidget {
           backgroundColor: Colors.black,
           appBar: AppBar(
             backgroundColor: Colors.black,
-            title: const Text(
+            title: Text(
               'Edit Input Types',
-              style: TextStyle(
+              style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontSize: 18,
+                fontWeight: FontWeight.w600,
               ),
             ),
             leading: const SizedBox(), // Empty leading to remove back button
@@ -52,8 +54,27 @@ class SummaryScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(16),
                       child: Column(
                         children: [
-                          ...fields.map((field) =>
-                              _buildFormField(context, field, formProvider)),
+                          ...fields.map((field) => Container(
+                                margin: const EdgeInsets.only(bottom: 16),
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.3),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.white.withOpacity(0.1),
+                                    width: 1,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.2),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: _buildFormField(
+                                    context, field, formProvider),
+                              )),
                         ],
                       ),
                     ),
@@ -68,9 +89,13 @@ class SummaryScreen extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(vertical: 15),
                         ),
                         onPressed: () => Navigator.pop(context),
-                        child: const Text(
+                        child: Text(
                           'Update',
-                          style: TextStyle(color: Colors.black),
+                          style: GoogleFonts.poppins(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                     ),
@@ -87,6 +112,7 @@ class SummaryScreen extends StatelessWidget {
   Widget _buildFormField(
       BuildContext context, dynamic field, FormProvider formProvider) {
     final formState = formProvider.formState;
+    final fieldIndex = formProvider.formFields!.indexOf(field) + 1;
 
     switch (field.type.toLowerCase()) {
       case 'radio':
@@ -94,13 +120,22 @@ class SummaryScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              field.label,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
+              '$fieldIndex. ${field.label}',
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontSize: 19,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             ...?field.options?.map(
               (option) => RadioListTile<String>(
-                title:
-                    Text(option, style: const TextStyle(color: Colors.white)),
+                title: Text(
+                  option,
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
                 value: option,
                 groupValue: formState[field.label],
                 onChanged: (value) {
@@ -109,7 +144,6 @@ class SummaryScreen extends StatelessWidget {
                 activeColor: const Color(0xFF00FFA3),
               ),
             ),
-            const SizedBox(height: 16),
           ],
         );
 
@@ -118,13 +152,22 @@ class SummaryScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              field.label,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
+              '$fieldIndex. ${field.label}',
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontSize: 19,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             ...?field.options?.map(
               (option) => CheckboxListTile(
-                title:
-                    Text(option, style: const TextStyle(color: Colors.white)),
+                title: Text(
+                  option,
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
                 value: formState['${field.label}_$option'] ?? false,
                 onChanged: (value) {
                   formProvider.updateField('${field.label}_$option', value);
@@ -133,7 +176,6 @@ class SummaryScreen extends StatelessWidget {
                 checkColor: Colors.black,
               ),
             ),
-            const SizedBox(height: 16),
           ],
         );
 
@@ -142,8 +184,12 @@ class SummaryScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              field.label,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
+              '$fieldIndex. ${field.label}',
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontSize: 19,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: 8),
             Container(
@@ -160,7 +206,10 @@ class SummaryScreen extends StatelessWidget {
                     value: option,
                     child: Text(
                       option,
-                      style: const TextStyle(color: Colors.white),
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                   );
                 }).toList(),
@@ -168,7 +217,10 @@ class SummaryScreen extends StatelessWidget {
                   formProvider.updateField(field.label, value);
                 },
                 dropdownColor: Colors.black,
-                style: const TextStyle(color: Colors.white),
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w400,
+                ),
                 decoration: const InputDecoration(
                   border: InputBorder.none,
                 ),
@@ -178,7 +230,6 @@ class SummaryScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
           ],
         );
 
@@ -187,8 +238,12 @@ class SummaryScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              field.label,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
+              '$fieldIndex. ${field.label}',
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontSize: 19,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: 8),
             TextField(
@@ -196,8 +251,16 @@ class SummaryScreen extends StatelessWidget {
               onChanged: (value) {
                 formProvider.updateField(field.label, value);
               },
-              style: const TextStyle(color: Colors.white),
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontWeight: FontWeight.w400,
+              ),
               decoration: InputDecoration(
+                hintText: field.placeholder,
+                hintStyle: GoogleFonts.poppins(
+                  color: Colors.white.withOpacity(0.5),
+                  fontWeight: FontWeight.w400,
+                ),
                 enabledBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white),
                 ),
@@ -206,7 +269,6 @@ class SummaryScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
           ],
         );
     }
@@ -224,11 +286,22 @@ class SummaryScreen extends StatelessWidget {
         ),
         title: Row(
           children: [
-            Text('Selected Input', style: TextStyle(color: Colors.white)),
-            SizedBox(width: 8),
             Text(
-                '${context.watch<FormProvider>().formFields?.length ?? 0} items',
-                style: TextStyle(color: Colors.grey, fontSize: 14)),
+              'Selected Input',
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              '${context.watch<FormProvider>().formFields?.length ?? 0} items',
+              style: GoogleFonts.poppins(
+                color: Colors.grey,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
           ],
         ),
       ),
@@ -242,7 +315,10 @@ class SummaryScreen extends StatelessWidget {
             return Center(
               child: Text(
                 'Error: ${formProvider.error}',
-                style: const TextStyle(color: Colors.white),
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             );
           }
@@ -265,12 +341,22 @@ class SummaryScreen extends StatelessWidget {
                       return const SizedBox.shrink();
                     }
                     return Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        border: Border(
-                          bottom:
-                              BorderSide(color: Colors.white.withOpacity(0.1)),
+                        color: Colors.black.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.1),
+                          width: 1,
                         ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                       ),
                       child: Row(
                         children: [
@@ -285,17 +371,19 @@ class SummaryScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   field.label,
-                                  style: const TextStyle(
+                                  style: GoogleFonts.poppins(
                                     color: Colors.white,
                                     fontSize: 16,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
                                   selectedOptions.join(', '),
-                                  style: TextStyle(
+                                  style: GoogleFonts.poppins(
                                     color: Colors.grey[400],
                                     fontSize: 14,
+                                    fontWeight: FontWeight.w400,
                                   ),
                                 ),
                               ],
@@ -310,12 +398,22 @@ class SummaryScreen extends StatelessWidget {
                       return const SizedBox.shrink();
                     }
                     return Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        border: Border(
-                          bottom:
-                              BorderSide(color: Colors.white.withOpacity(0.1)),
+                        color: Colors.black.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.1),
+                          width: 1,
                         ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                       ),
                       child: Row(
                         children: [
@@ -326,17 +424,19 @@ class SummaryScreen extends StatelessWidget {
                           const SizedBox(width: 12),
                           Text(
                             field.label,
-                            style: const TextStyle(
+                            style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontSize: 16,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                           const Spacer(),
                           Text(
                             value.toString(),
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               color: Colors.grey[400],
                               fontSize: 14,
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
                         ],
@@ -352,11 +452,12 @@ class SummaryScreen extends StatelessWidget {
                     style: TextButton.styleFrom(
                       padding: EdgeInsets.zero,
                     ),
-                    child: const Text(
+                    child: Text(
                       'Edit Response',
-                      style: TextStyle(
-                        color: Color(0xFF00FFA3),
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFF00FFA3),
                         fontSize: 16,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
@@ -373,9 +474,13 @@ class SummaryScreen extends StatelessWidget {
                       context.read<FormProvider>().clearForm();
                       Navigator.pop(context);
                     },
-                    child: const Text(
+                    child: Text(
                       'Back',
-                      style: TextStyle(color: Colors.black),
+                      style: GoogleFonts.poppins(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ),
